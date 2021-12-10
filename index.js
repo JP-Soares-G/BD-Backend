@@ -1,10 +1,20 @@
 const express = require('express')
 const app = express()
+
+const pool = require('./src/db')
+
+const bodyParser = require('body-parser')
 const cors = require('cors')
 
-app.use(cors())
-app.get('/', (req, res) => {
 
+
+app.use(cors())
+app.use(bodyParser.json())
+
+app.get('/', async (req, res) => {
+    const results = await pool.query('SELECT * FROM users ORDER BY id ASC')
+    // console.log(results.rows)
+    const rows = results.rows
     const produtos = [
         {
             id: 1,
@@ -17,7 +27,7 @@ app.get('/', (req, res) => {
             category: "Tecnologia"
         },
     ]
-    res.json({produtos})
+    res.json({rows})
 })
 
 app.get('/:id', (req, res) => {
